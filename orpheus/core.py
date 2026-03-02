@@ -404,7 +404,8 @@ class Orpheus:
         open(self.settings_location, 'w').write(json.dumps(new_settings, indent = 4, sort_keys = False))
 
         if new_setting_detected:
-            print('New settings detected, or the configuration has been reset. Please update settings.json')
+            if self.settings.get('global', {}).get('advanced', {}).get('debug_mode', False):
+                print('New settings detected, or the configuration has been reset. Please update settings.json')
             # Don't exit in GUI mode - just print the message and continue
             # The GUI will handle showing appropriate messages to the user
 
