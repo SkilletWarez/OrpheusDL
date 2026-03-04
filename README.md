@@ -80,7 +80,7 @@ Follow these steps to get a local copy of Orpheus up and running:
    `python orpheus.py`<br>
     <sub>*(use python3 on macOS)*</sub><br>
 
-[![Watch how to install](https://i.imgur.com/ibjhf5x.png)](https://youtu.be/AGsYTQuO7nk)
+[![Watch how to install](https://i.imgur.com/fgrPgeV.png)](https://youtu.be/AGsYTQuO7nk)
 
 <!-- USAGE EXAMPLES -->
 ## Usage
