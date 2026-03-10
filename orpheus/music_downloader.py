@@ -1040,6 +1040,11 @@ class Downloader:
         album_tags['quality'] = f' [{album_info.quality}]' if album_info.quality else ''
         album_tags['explicit'] = ' [E]' if album_info.explicit else ''
         album_tags['artist_initials'] = self._get_artist_initials_from_name(album_info)
+        
+        # Add additional formatting tags if they exist
+        album_tags['album_artist'] = sanitise_name(album_info.album_artist) if album_info.album_artist else album_tags['artist']
+        album_tags['label'] = sanitise_name(album_info.label) if album_info.label else ''
+        album_tags['catalog_number'] = sanitise_name(album_info.catalog_number) if album_info.catalog_number else ''
 
         # album_path = path + self.global_settings['formatting']['album_format'].format(**album_tags) # OLD
         album_path_formatted_name = self.global_settings['formatting']['album_format'].format(**album_tags)
@@ -1065,6 +1070,7 @@ class Downloader:
         track_tags['upc'] = sanitise_name(track_info.tags.upc) if track_info.tags.upc else ''
         track_tags['composer'] = sanitise_name(track_info.tags.composer) if track_info.tags.composer else ''
         track_tags['label'] = sanitise_name(track_info.tags.label) if track_info.tags.label else ''
+        track_tags['catalog_number'] = sanitise_name(track_info.tags.catalog_number) if track_info.tags.catalog_number else ''
         track_tags['release_date'] = track_info.tags.release_date if track_info.tags.release_date else ''
         track_tags['genres'] = ', '.join(track_info.tags.genres) if track_info.tags.genres else ''
         

@@ -279,6 +279,7 @@ class Tags:
     description: Optional[str] = None
     comment: Optional[str] = None
     label: Optional[str] = None
+    catalog_number: Optional[str] = None
     extra_tags: Optional[dict] = field(default_factory=dict)
 
 
@@ -319,6 +320,9 @@ class AlbumInfo:
     all_track_cover_jpg_url: Optional[str] = None
     animated_cover_url: Optional[str] = None
     description: Optional[str] = None
+    album_artist: Optional[str] = None
+    label: Optional[str] = None
+    catalog_number: Optional[str] = None
     track_extra_kwargs: Optional[dict] = field(default_factory=dict)
 
 
