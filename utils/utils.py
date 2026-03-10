@@ -288,34 +288,40 @@ def silentremove(filename):
             raise
 
 def read_temporary_setting(settings_location, module, root_setting=None, setting=None, global_mode=False):
+    # Standardize module name to lowercase (as used by orpheus core)
+    module = module.lower()
     try:
-        temporary_settings = pickle.load(open(settings_location, 'rb'))
+        with open(settings_location, 'rb') as f:
+            temporary_settings = pickle.load(f)
     except (FileNotFoundError, EOFError):
         temporary_settings = {'modules': {}}
 
-    module_settings = temporary_settings['modules'][module] if module in temporary_settings['modules'] else None
+    module_settings = temporary_settings['modules'].get(module)
     
     if module_settings:
         if global_mode:
             session = module_settings
         else:
-            session = module_settings['sessions'][module_settings['selected']]
+            session = module_settings['sessions'].get(module_settings.get('selected', 'default'))
     else:
         session = None
 
     if session and root_setting:
         if setting:
-            return session[root_setting][setting] if root_setting in session and setting in session[root_setting] else None
+            return session[root_setting].get(setting) if root_setting in session and isinstance(session[root_setting], dict) else None
         else:
-            return session[root_setting] if root_setting in session else None
+            return session.get(root_setting)
     elif root_setting and not session:
         return None  # Return None instead of raising Exception to support cleared sessions
     else:
         return session
 
 def set_temporary_setting(settings_location, module, root_setting, setting=None, value=None, global_mode=False):
+    # Standardize module name to lowercase (as used by orpheus core)
+    module = module.lower()
     try:
-        temporary_settings = pickle.load(open(settings_location, 'rb'))
+        with open(settings_location, 'rb') as f:
+            temporary_settings = pickle.load(f)
     except (FileNotFoundError, EOFError):
         temporary_settings = {'modules': {}}
 
@@ -347,18 +353,24 @@ def set_temporary_setting(settings_location, module, root_setting, setting=None,
         session[root_setting][setting] = value
     else:
         session[root_setting] = value
-    pickle.dump(temporary_settings, open(settings_location, 'wb'))
+        
+    with open(settings_location, 'wb') as f:
+        pickle.dump(temporary_settings, f)
 
 def remove_module_from_storage(settings_location, module):
     """Removes a module's entire entry from storage."""
+    # Standardize module name to lowercase (as used by orpheus core)
+    module = module.lower()
     try:
-        temporary_settings = pickle.load(open(settings_location, 'rb'))
+        with open(settings_location, 'rb') as f:
+            temporary_settings = pickle.load(f)
     except (FileNotFoundError, EOFError):
         return
 
     if 'modules' in temporary_settings and module in temporary_settings['modules']:
         del temporary_settings['modules'][module]
-        pickle.dump(temporary_settings, open(settings_location, 'wb'))
+        with open(settings_location, 'wb') as f:
+            pickle.dump(temporary_settings, f)
 
 create_temp_filename = lambda : f'temp/{os.urandom(16).hex()}'
 
