@@ -2134,6 +2134,10 @@ class Downloader:
                         print()
             return value
 
+        # Ensure we can download before proceeding (triggers authentication if needed)
+        if not self._ensure_can_download_or_abort('track', track_id, 'Track'):
+            return return_with_blank_line(None)
+
         quality_tier = QualityEnum[self.global_settings['general']['download_quality'].upper()]
         codec_options = CodecOptions(
             spatial_codecs=self.global_settings['codecs']['spatial_codecs'],
