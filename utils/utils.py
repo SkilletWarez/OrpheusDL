@@ -402,11 +402,17 @@ def get_clean_env():
         env['DYLD_LIBRARY_PATH'] = env['DYLD_LIBRARY_PATH_ORIG']
     return env
 
+_ffmpeg_cache = None
+
 def find_system_ffmpeg():
     """
     Find FFmpeg on macOS, Linux, or Windows. Returns (found: bool, path: str).
     Checks common locations first, then system PATH.
     """
+    global _ffmpeg_cache
+    if _ffmpeg_cache is not None:
+        return _ffmpeg_cache
+
     import subprocess
     import platform
     
@@ -444,7 +450,8 @@ def find_system_ffmpeg():
                     run_kwargs['creationflags'] = subprocess.CREATE_NO_WINDOW
                 result = subprocess.run([path, '-version'], **run_kwargs)
                 if result.returncode == 0:
-                    return True, path
+                    _ffmpeg_cache = (True, path)
+                    return _ffmpeg_cache
             except:
                 pass
     
@@ -458,8 +465,10 @@ def find_system_ffmpeg():
         if result.returncode == 0:
             ffmpeg_path = result.stdout.decode().strip().split('\n')[0].strip()
             if ffmpeg_path and os.path.isfile(ffmpeg_path):
-                return True, ffmpeg_path
+                _ffmpeg_cache = (True, ffmpeg_path)
+                return _ffmpeg_cache
     except:
         pass
     
-    return False, None
+    _ffmpeg_cache = (False, None)
+    return _ffmpeg_cache
